@@ -10,6 +10,7 @@ ENDIF(CMAKE_SIZEOF_VOID_P EQUAL 4)
 set(DST_LIB lib${LIB_SUFFIX})
 set(prefix ${CMAKE_INSTALL_PREFIX})
 
+find_package (Threads)
 
 if(${USEQT} STREQUAL "4")
 

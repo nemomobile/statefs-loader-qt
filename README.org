@@ -4,4 +4,5 @@ Some Qt components/code need main Qt event loop to be running and it
 should be started in the thread where some (read any) Qt code was
 used, it saves current thread as the main thread. So, this loader
 create QCoreApplication and starts its event loop in a dedicated
-thread. When event loop is started requested provider can be loaded safely.
+thread. When event loop is started requested provider can be loaded
+safely.
