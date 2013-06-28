@@ -8,7 +8,7 @@ URL: http://github.com/nemomobile/statefs-loader-qt
 Source0: %{name}-%{version}.tar.bz2
 BuildRequires: cmake >= 2.8
 BuildRequires: pkgconfig(QtCore)
-BuildRequires: pkgconfig(statefs) >= 0.3.0
+BuildRequires: pkgconfig(statefs) >= 0.3.1
 BuildRequires: pkgconfig(cor) >= 0.1.4
 Requires: statefs
 
