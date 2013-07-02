@@ -15,10 +15,17 @@ static const char *loader_name = "qt5";
 class QtLoader : public statefs::Loader
 {
 public:
-    QtLoader() : is_reloadable_(true) {}
-    virtual ~QtLoader() {}
+    QtLoader() : is_reloadable_(true) {
+        if (QCoreApplication::instance())
+            std::cerr << "NB! QCoreApplication is already created!"
+                      << std::endl;
+    }
 
-    std::shared_ptr<statefs_provider> load(std::string const& path)
+    virtual ~QtLoader() {
+    }
+
+    std::shared_ptr<statefs_provider> load
+    (std::string const& path, statefs_server *server)
     {
         if (!app) {
             is_reloadable_ = false;
@@ -34,16 +41,17 @@ public:
             return nullptr;
 
         statefs_provider *prov = nullptr;
-        auto load_ = [fn, &prov]() {
-            prov = fn();
+        auto load_ = [fn, &prov, server]() {
+            prov = fn(server);
         };
         app->execute(load_);
         if (!prov)
             return nullptr;
 
-        auto deleter = [lib](statefs_provider* p) {
+        auto deleter = [lib](statefs_provider* p) mutable {
             if (p)
                 statefs_provider_release(p);
+            lib.reset();
         };
         std::cerr << "prov ptr" << prov << std::endl;
         statefs::provider_ptr res(prov, deleter);
