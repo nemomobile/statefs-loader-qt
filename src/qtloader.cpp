@@ -2,7 +2,9 @@
 #include <statefs/util.h>
 #include <cor/so.hpp>
 #include "wrapqt.hpp"
+
 #include <iostream>
+#include <QDebug>
 
 static const char *sym_name = statefs_provider_accessor();
 
@@ -34,26 +36,32 @@ public:
 
         std::shared_ptr<cor::SharedLib> lib
             (new cor::SharedLib(path, RTLD_LAZY));
-        if (!lib->is_loaded())
+        if (!lib->is_loaded()) {
+            qWarning() << "qt5 loader: Can't load " << path.c_str();
             return nullptr;
+        }
         auto fn = lib->sym<statefs_provider_fn>(sym_name);
-        if (!fn)
+        if (!fn) {
+            qWarning() << "qt5 loader: Can't resolve statefs_provider_fn in "
+                       << path.c_str();
             return nullptr;
+        }
 
         statefs_provider *prov = nullptr;
         auto load_ = [fn, &prov, server]() {
             prov = fn(server);
         };
         app->execute(load_);
-        if (!prov)
+        if (!prov) {
+            qWarning() << "qt5 loader: provider is null";
             return nullptr;
+        }
 
         auto deleter = [lib](statefs_provider* p) mutable {
             if (p)
                 statefs_provider_release(p);
             lib.reset();
         };
-        std::cerr << "prov ptr" << prov << std::endl;
         statefs::provider_ptr res(prov, deleter);
         return res;
     }
