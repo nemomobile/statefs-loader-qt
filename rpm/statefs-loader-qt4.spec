@@ -8,7 +8,7 @@ URL: http://github.com/nemomobile/statefs-loader-qt
 Source0: %{name}-%{version}.tar.bz2
 BuildRequires: cmake >= 2.8
 BuildRequires: pkgconfig(QtCore)
-BuildRequires: pkgconfig(statefs) >= 0.3.1
+BuildRequires: pkgconfig(statefs) >= 0.3.10
 BuildRequires: pkgconfig(cor) >= 0.1.4
 Requires: statefs
 
@@ -31,7 +31,10 @@ rm -rf %{buildroot}
 
 %files
 %defattr(-,root,root,-)
-%{_libdir}/statefs/libloader-qt4.so
+%{_statefs_libdir}/libloader-qt4.so
 
-%post
-statefs register %{_libdir}/statefs/libloader-qt4.so || :
+%posttrans
+%statefs_register loader %{_statefs_libdir}/libloader-qt4.so || :
+
+%postun
+%statefs_cleanup || :
