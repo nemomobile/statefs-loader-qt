@@ -34,8 +34,7 @@ public:
             app.reset(new cor::qt::CoreAppContainer());
         }
 
-        std::shared_ptr<cor::SharedLib> lib
-            (new cor::SharedLib(path, RTLD_LAZY));
+        auto lib = std::make_shared<cor::SharedLib>(path, RTLD_LAZY);
         if (!lib->is_loaded()) {
             qWarning() << "qt5 loader: Can't load " << path.c_str();
             return nullptr;

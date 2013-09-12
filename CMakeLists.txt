@@ -32,7 +32,7 @@ endif(${USEQT} STREQUAL "4")
 
 
 set(CMAKE_CXX_FLAGS
-  "${CMAKE_CXX_FLAGS} -Wall -O2 -feliminate-unused-debug-types -std=c++0x"
+  "${CMAKE_CXX_FLAGS} -Wall -O2 -g -feliminate-unused-debug-types -std=c++0x"
   )
 
 #-Wno-psabi is to remove next g++ warning/note:
@@ -58,3 +58,4 @@ link_directories(
 )
 
 add_subdirectory(src)
+#add_subdirectory(tests)

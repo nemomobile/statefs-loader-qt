@@ -51,8 +51,8 @@ private:
 
     std::mutex mutex_;
     std::condition_variable started_;
-    std::thread thread_;
     std::unique_ptr<CoreAppImpl> app_;
+    std::thread thread_;
 };
 
 }}
