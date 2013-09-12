@@ -29,6 +29,9 @@ public:
     std::shared_ptr<statefs_provider> load
     (std::string const& path, statefs_server *server)
     {
+        // NB! No Qt calls in this function before QCoreApplication is
+        // created by CoreAppContainer
+        std::cerr << "Qt5 loader: loading " << path << std::endl;
         if (!app) {
             is_reloadable_ = false;
             app.reset(new cor::qt::CoreAppContainer());
@@ -36,13 +39,14 @@ public:
 
         auto lib = std::make_shared<cor::SharedLib>(path, RTLD_LAZY);
         if (!lib->is_loaded()) {
-            qWarning() << "qt5 loader: Can't load " << path.c_str();
+            std::cerr << "qt5 loader: Can't load " << path.c_str()
+                      << ": " << ::dlerror() << std::endl;
             return nullptr;
         }
         auto fn = lib->sym<statefs_provider_fn>(sym_name);
         if (!fn) {
-            qWarning() << "qt5 loader: Can't resolve statefs_provider_fn in "
-                       << path.c_str();
+            std::cerr << "qt5 loader: Can't resolve statefs_provider_fn in "
+                      << path << std::endl;
             return nullptr;
         }
 
@@ -52,7 +56,8 @@ public:
         };
         app->execute(load_);
         if (!prov) {
-            qWarning() << "qt5 loader: provider is null";
+            std::cerr << "qt5 loader: provider "
+                       << path << " is null\n";
             return nullptr;
         }
 
