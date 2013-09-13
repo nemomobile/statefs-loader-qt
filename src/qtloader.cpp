@@ -61,9 +61,10 @@ public:
             return nullptr;
         }
 
-        auto deleter = [lib](statefs_provider* p) mutable {
-            if (p)
-                statefs_provider_release(p);
+        auto deleter = [lib, app](statefs_provider* p) mutable {
+            app->execute([p]() {
+                    if (p) statefs_provider_release(p);
+                });
             lib.reset();
         };
         statefs::provider_ptr res(prov, deleter);
@@ -76,7 +77,7 @@ public:
 
 private:
 
-    std::unique_ptr<cor::qt::CoreAppContainer> app;
+    std::shared_ptr<cor::qt::CoreAppContainer> app;
     bool is_reloadable_;
 };
 
