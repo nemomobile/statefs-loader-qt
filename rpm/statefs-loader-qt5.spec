@@ -33,8 +33,8 @@ rm -rf %{buildroot}
 %defattr(-,root,root,-)
 %{_statefs_libdir}/libloader-qt5.so
 
-%pretrans
-%statefs_pretrans || :
+%pre
+%statefs_pre || :
 
 %posttrans
 %statefs_loader_register %{_statefs_libdir}/libloader-qt5.so system

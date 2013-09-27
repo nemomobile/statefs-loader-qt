@@ -10,7 +10,7 @@ BuildRequires: cmake >= 2.8
 BuildRequires: pkgconfig(QtCore)
 BuildRequires: pkgconfig(statefs) >= 0.3.14
 BuildRequires: pkgconfig(cor) >= 0.1.4
-Requires: statefs >= 0.3.14
+Requires: statefs >= 0.3.15
 
 %description
 %{summary}
@@ -33,8 +33,8 @@ rm -rf %{buildroot}
 %defattr(-,root,root,-)
 %{_statefs_libdir}/libloader-qt4.so
 
-%pretrans
-%statefs_pretrans || :
+%pre
+%statefs_pre || :
 
 %posttrans
 %statefs_loader_register %{_statefs_libdir}/libloader-qt4.so system
