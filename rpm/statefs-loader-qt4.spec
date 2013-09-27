@@ -33,10 +33,19 @@ rm -rf %{buildroot}
 %defattr(-,root,root,-)
 %{_statefs_libdir}/libloader-qt4.so
 
+%pretrans
+%statefs_pretrans || :
+
 %posttrans
 %statefs_loader_register %{_statefs_libdir}/libloader-qt4.so system
-%statefs_loader_register %{_statefs_libdir}/libloader-qt4.so || :
+%statefs_loader_register %{_statefs_libdir}/libloader-qt4.so
+%statefs_posttrans || :
+
+%preun
+%statefs_preun || :
 
 %postun
 %statefs_loader_unregister %{_statefs_libdir}/libloader-qt4.so
-%statefs_loader_unregister %{_statefs_libdir}/libloader-qt4.so system || :
+%statefs_loader_unregister %{_statefs_libdir}/libloader-qt4.so system
+%statefs_cleanup
+%statefs_postun || :
