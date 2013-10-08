@@ -19,7 +19,7 @@ Requires: statefs >= 0.3.14
 %setup -q
 
 %build
-%cmake -DUSEQT=5
+%cmake -DUSEQT=5 %{?_with_multiarch:-DENABLE_MULTIARCH=ON}
 make %{?jobs:-j%jobs}
 
 %install
