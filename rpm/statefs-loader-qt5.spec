@@ -34,7 +34,7 @@ rm -rf %{buildroot}
 %{_statefs_libdir}/libloader-qt5.so
 
 %pre
-%statefs_pre || :
+%statefs_pre
 
 %post
 /sbin/ldconfig
@@ -45,9 +45,13 @@ rm -rf %{buildroot}
 %preun
 %statefs_preun
 %statefs_loader_unregister %{_statefs_libdir}/libloader-qt5.so
-%statefs_loader_unregister %{_statefs_libdir}/libloader-qt5.so system || :
+%statefs_loader_unregister %{_statefs_libdir}/libloader-qt5.so system
 
 %postun
 /sbin/ldconfig
 %statefs_cleanup
-%statefs_postun || :
+%statefs_postun
+
+%posttrans
+%statefs_loader_register %{_statefs_libdir}/libloader-qt5.so
+%statefs_loader_register %{_statefs_libdir}/libloader-qt5.so system
