@@ -4,6 +4,7 @@
 #include "wrapqt.hpp"
 
 #include <iostream>
+#include <mutex>
 #include <QDebug>
 
 static const char *sym_name = statefs_provider_accessor();
@@ -33,8 +34,11 @@ public:
         // created by CoreAppContainer
         std::cerr << "Qt5 loader: loading " << path << std::endl;
         if (!app) {
-            is_reloadable_ = false;
-            app.reset(new cor::qt::CoreAppContainer());
+            std::lock_guard<std::mutex> lock(mutex_);
+            if (!app) {
+                is_reloadable_ = false;
+                app.reset(new cor::qt::CoreAppContainer());
+            }
         }
 
         auto lib = std::make_shared<cor::SharedLib>(path, RTLD_LAZY);
@@ -77,6 +81,7 @@ public:
 
 private:
 
+    std::mutex mutex_;
     std::shared_ptr<cor::qt::CoreAppContainer> app;
     bool is_reloadable_;
 };
