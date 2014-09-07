@@ -9,6 +9,8 @@
 #include <memory>
 #include <chrono>
 #include <thread>
+#include <mutex>
+#include <condition_variable>
 
 namespace cor { namespace qt {
 

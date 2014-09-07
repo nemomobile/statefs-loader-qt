@@ -33,11 +33,11 @@ public:
         // NB! No Qt calls in this function before QCoreApplication is
         // created by CoreAppContainer
         std::cerr << "Qt5 loader: loading " << path << std::endl;
-        if (!app) {
+        if (!app_) {
             std::lock_guard<std::mutex> lock(mutex_);
-            if (!app) {
+            if (!app_) {
                 is_reloadable_ = false;
-                app.reset(new cor::qt::CoreAppContainer());
+                app_.reset(new cor::qt::CoreAppContainer());
             }
         }
 
@@ -58,13 +58,14 @@ public:
         auto load_ = [fn, &prov, server]() {
             prov = fn(server);
         };
-        app->execute(load_);
+        app_->execute(load_);
         if (!prov) {
             std::cerr << "qt5 loader: provider "
                        << path << " is null\n";
             return nullptr;
         }
 
+        auto app = app_;
         auto deleter = [lib, app](statefs_provider* p) mutable {
             app->execute([p]() {
                     if (p) statefs_provider_release(p);
@@ -82,7 +83,7 @@ public:
 private:
 
     std::mutex mutex_;
-    std::shared_ptr<cor::qt::CoreAppContainer> app;
+    std::shared_ptr<cor::qt::CoreAppContainer> app_;
     bool is_reloadable_;
 };
 
